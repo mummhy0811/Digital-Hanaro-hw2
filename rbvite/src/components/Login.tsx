@@ -8,7 +8,7 @@ export type LoginHandler = {
 };
 
 export const Login = () => {
-  const { login } = useSession();
+  const { login, isValidRange } = useSession();
   const [showAlarm, setShowAlarm] = useState<boolean>(false);
   const idRef = useRef<HTMLInputElement>(null);
 
@@ -17,17 +17,16 @@ export const Login = () => {
 
     const id = Number(idRef.current?.value);
 
-    console.log(id);
-    if ( id!=0 && id < 1 || id > 10) {
+    if (login(id)) { 
+      setShowAlarm(false);
+      console.log('dd'); //TODO 페이지 이동
+    }
+
+    if(id && !isValidRange(id) ){ //입력이 돼있고, 범위 이외
       setShowAlarm(true);
       return;
     }
 
-    if (login(id)) {
-      setShowAlarm(false); 
-      console.log('dd'); //TODO 페이지 이동
-    }
-    
   };
 
   return (

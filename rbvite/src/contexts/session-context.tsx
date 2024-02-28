@@ -17,6 +17,7 @@ type SessionContextProp = {
   session: LoginUser;
   login: (id: number) => boolean;
   logout: () => void;
+  isValidRange: (id: number) => boolean;
 };
 
 type ProviderProps = {
@@ -34,6 +35,7 @@ const SessionContext = createContext<SessionContextProp>({
   session: { id: null},
   login: () => false,
   logout: () => {},
+  isValidRange: () => false,
 });
 
 const reducer = (session: LoginUser, { type, payload }: Action) => {
@@ -88,6 +90,9 @@ export const SessionProvider = ({
     getStorage() || DefaultSession
   );
 
+  const isValidRange = (id:number) => {
+    return id>=1 && id<=10;
+  }
 
   const login = useCallback((id: number) => {
     const loginNoti =
@@ -119,7 +124,7 @@ export const SessionProvider = ({
 
   return (
     <SessionContext.Provider
-      value={{ session, login, logout}}
+      value={{ session, login, logout ,isValidRange}}
     >
       {children}
     </SessionContext.Provider>

@@ -49,7 +49,6 @@ const reducer = (session: LoginUser, { type, payload }: Action) => {
       break;
     case "logout":
       newer = { ...payload};
-      console.log(newer);
       break;
     default:
       return session;

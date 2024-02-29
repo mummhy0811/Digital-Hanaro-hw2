@@ -1,5 +1,6 @@
 import { FormEvent, useRef, useState } from "react";
 import { useSession } from "../contexts/session-context";
+import { useNavigate } from "react-router-dom";
 
 export type LoginHandler = {
   noti: (msg: string) => void;
@@ -11,20 +12,21 @@ export const Login = () => {
   const { login, isValidRange } = useSession();
   const [showAlarm, setShowAlarm] = useState<boolean>(false);
   const idRef = useRef<HTMLInputElement>(null);
-
+  const navigate = useNavigate();
+  
   const makeLogin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
 
     const id = Number(idRef.current?.value);
 
-    if (login(id)) { 
-      setShowAlarm(false);
-      console.log('dd'); //TODO 페이지 이동
-    }
-
     if(id && !isValidRange(id) ){ //입력이 돼있고, 범위 이외
       setShowAlarm(true);
       return;
+    }
+
+    if (login(id)) { 
+      setShowAlarm(false);
+      navigate('/albums');
     }
 
   };

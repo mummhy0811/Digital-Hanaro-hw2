@@ -17,6 +17,7 @@ type SessionContextProp = {
   logout: () => void;
   isEmpty: (id: number) => boolean;
   isValidRange: (id: number) => boolean;
+  setAlbum: (id:number) => void;
 };
 
 type ProviderProps = {
@@ -25,8 +26,11 @@ type ProviderProps = {
 };
 
 type Action = {
-  type: "login" | "logout" | "init";
+  type: "login" | "logout" | "init" ;
   payload: Session;
+}|{
+  type: "setAlbum";
+  payload: number;
 };
 
 const SessionContext = createContext<SessionContextProp>({
@@ -35,6 +39,7 @@ const SessionContext = createContext<SessionContextProp>({
   logout: () => {},
   isEmpty: () => true,
   isValidRange: () => false,
+  setAlbum: () => {},
 });
 
 const reducer = (session: Session, { type, payload }: Action) => {
@@ -48,6 +53,9 @@ const reducer = (session: Session, { type, payload }: Action) => {
       break;
     case "logout":
       newer = { ...payload };
+      break;
+    case "setAlbum":
+      newer = {...session, selectedAlbumId:payload};
       break;
     default:
       return session;
@@ -94,7 +102,6 @@ export const SessionProvider = ({
 
   const isEmpty = (id: number): boolean => {
     const loginNoti = loginHandlerRef?.current?.noti || alert;
-
     const focusId = loginHandlerRef?.current?.focusId;
 
     if (!id) {
@@ -117,13 +124,17 @@ export const SessionProvider = ({
     dispatch({ type: "logout", payload: DefaultSession });
   }, []);
 
+  const setAlbum = useCallback((id:number) => {
+    dispatch({ type: "setAlbum", payload: id });
+  }, []);
+
   useEffect(() => {
     dispatch({ type: "init", payload: getStorage() });
   }, []);
 
   return (
     <SessionContext.Provider
-      value={{ session, login, logout, isValidRange, isEmpty }}
+      value={{ session, login, logout, isValidRange, isEmpty, setAlbum }}
     >
       {children}
     </SessionContext.Provider>

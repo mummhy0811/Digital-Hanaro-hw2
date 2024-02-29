@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "../contexts/session-context";
 import { useFetch } from "../hooks/fetch";
 import Album, { AlbumType } from "./Album";
@@ -23,6 +23,7 @@ export const Albums = () => {
     defaultData: [],
   });
 
+
   return (
     <>
     <div className="flex items-center">
@@ -30,15 +31,15 @@ export const Albums = () => {
         <button className='m-3 px-2 bg-green-500 text-white'>앨범 상세보기</button>
     </div>
     
-      {/* <ul>
+      <ul>
         {albums?.map((album) => (
           <Album 
           key={album.id} albumData={album} 
           selectedAlbumId={selectedAlbumId}
           onSelect={() => handleAlbumClick(album.id)} />
         ))}
-      </ul> */}
-      <ul>
+      </ul>
+      {/* <ul>
           {albums?.map((album) => (
             <li key={album.id}>
               <button
@@ -51,7 +52,7 @@ export const Albums = () => {
               </button>
             </li>
           ))}
-        </ul>
+        </ul> */}
     </>
   );
 };

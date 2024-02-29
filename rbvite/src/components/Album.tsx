@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useSession } from "../contexts/session-context";
 
 export type AlbumType = {
   albumId: number;
@@ -10,14 +11,21 @@ export type AlbumType = {
 
 type Props = {
   albumData: AlbumType;
-  selectedAlbumId: number|null;
+  selectedAlbumId: number | null;
   onSelect: () => void;
 };
 
-const Album = ({ albumData, selectedAlbumId, onSelect }: Props) => {
+const Album = ({ albumData }: Props) => {
 
-    const isSelected = selectedAlbumId===albumData.id;
-    console.log(selectedAlbumId);
+
+  const {
+    session:{selectedAlbumId},
+    setAlbum,
+  } = useSession();
+
+  console.log(selectedAlbumId);
+  const isSelected = selectedAlbumId === albumData.id;
+
   return (
     <>
       <li
@@ -26,9 +34,15 @@ const Album = ({ albumData, selectedAlbumId, onSelect }: Props) => {
           "border-sky-400": isSelected,
           "mx-3": isSelected,
         })}
-        onClick={onSelect}
+        onClick={()=>{
+          setAlbum(albumData.id);
+          console.log(`클릭! ${albumData.id}`)}
+        }
       >
-        <strong className="items-start"> {albumData?.id}.{albumData?.title} </strong>
+        <strong className="items-start">
+          {" "}
+          {albumData?.id}.{albumData?.title}{" "}
+        </strong>
       </li>
     </>
   );

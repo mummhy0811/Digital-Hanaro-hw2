@@ -5,6 +5,7 @@ import { SessionProvider } from './contexts/session-context';
 import { Route, Routes } from 'react-router-dom';
 import { Nav } from './Nav';
 import { Albums } from './components/Albums';
+import { AlbumDetail } from './components/AlbumDetail';
 
 function App() {
   const loginHandlerRef = useRef<LoginHandler>(null);
@@ -15,7 +16,8 @@ function App() {
         <Nav/>
         <Routes>
           <Route path='/' element={<Login />} />
-          <Route path='/albums' element={<Albums />} />
+          <Route path='/albums' element={<Albums />}/>
+          <Route path='/albums/:albumId' element={<AlbumDetail />}/>
         </Routes>
       </SessionProvider>
     </>

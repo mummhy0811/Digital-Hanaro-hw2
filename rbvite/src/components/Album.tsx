@@ -11,20 +11,16 @@ export type AlbumType = {
 
 type Props = {
   albumData: AlbumType;
-  selectedAlbumId: number | null;
-  onSelect: () => void;
 };
 
 const Album = ({ albumData }: Props) => {
-
 
   const {
     session:{selectedAlbumId},
     setAlbum,
   } = useSession();
 
-  console.log(selectedAlbumId);
-  const isSelected = selectedAlbumId === albumData.id;
+  const isSelected = (selectedAlbumId === albumData.id);
 
   return (
     <>
@@ -36,11 +32,10 @@ const Album = ({ albumData }: Props) => {
         })}
         onClick={()=>{
           setAlbum(albumData.id);
-          console.log(`클릭! ${albumData.id}`)}
+          }
         }
       >
         <strong className="items-start">
-          {" "}
           {albumData?.id}.{albumData?.title}{" "}
         </strong>
       </li>

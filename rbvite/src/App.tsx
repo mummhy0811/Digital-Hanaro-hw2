@@ -3,6 +3,7 @@ import './App.css'
 import { Login, LoginHandler } from './components/Login'
 import { SessionProvider } from './contexts/session-context';
 import { Route, Routes } from 'react-router-dom';
+import { Nav } from './Nav';
 
 function App() {
   const loginHandlerRef = useRef<LoginHandler>(null);
@@ -10,6 +11,7 @@ function App() {
   return (
     <>
       <SessionProvider loginHandlerRef={loginHandlerRef}>
+        <Nav/>
         <Routes>
           <Route path='/' element={<Login />} />
         </Routes>

@@ -3,7 +3,7 @@ import { useSession } from "./contexts/session-context";
 
 export const Nav = () => {
   const {
-    session: { id },
+    session: { loginUser },
     logout,
   } = useSession();
 
@@ -16,9 +16,9 @@ export const Nav = () => {
       <div className="flex justify-around p-5 font-bold bg-cyan-500 text-white rounded-lg">
         <h1 className="font-bold ">Hanaro Album</h1>
 
-        {id ? (
+        {loginUser?.id ? (
           <div className="flex justify-around">
-            <div className="text-gray-600">{id}</div>
+            <div className="text-gray-600">{loginUser?.id}</div>
             <div className="text-black">dfadf</div>
             <NavLink
               to="/"

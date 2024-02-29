@@ -11,12 +11,11 @@ import {
 } from "react";
 import { LoginHandler } from "../components/Login";
 
-type LoginUser = { id: number|null;};
-
 type SessionContextProp = {
-  session: LoginUser;
-  login: (id: number) => boolean;
+  session: Session;
+  login: (user: LoginUser) => boolean;
   logout: () => void;
+  isEmpty: (id: number) => boolean;
   isValidRange: (id: number) => boolean;
 };
 
@@ -25,30 +24,30 @@ type ProviderProps = {
   loginHandlerRef?: RefObject<LoginHandler>;
 };
 
-type Action ={
-  type: "login" | "logout" | "set";
-  payload: LoginUser ;
+type Action = {
+  type: "login" | "logout" | "init";
+  payload: Session;
 };
 
-
 const SessionContext = createContext<SessionContextProp>({
-  session: { id: null},
+  session: { loginUser: null, selectedAlbumId: null },
   login: () => false,
   logout: () => {},
+  isEmpty: () => true,
   isValidRange: () => false,
 });
 
-const reducer = (session: LoginUser, { type, payload }: Action) => {
+const reducer = (session: Session, { type, payload }: Action) => {
   let newer;
   switch (type) {
-    case "set":
-      newer={...payload};
+    case "init":
+      newer = { ...payload };
       break;
     case "login":
-      newer=payload;
+      newer = payload;
       break;
     case "logout":
-      newer = { ...payload};
+      newer = { ...payload };
       break;
     default:
       return session;
@@ -59,15 +58,16 @@ const reducer = (session: LoginUser, { type, payload }: Action) => {
 
 const SKEY = "session";
 
-const DefaultSession: LoginUser = {
-  id: null
+const DefaultSession: Session = {
+  loginUser: null,
+  selectedAlbumId: null,
 };
 
 function getStorage() {
   const storedData = localStorage.getItem(SKEY);
-  console.log(storedData)
+  console.log(storedData);
   if (storedData) {
-    return JSON.parse(storedData) as LoginUser;
+    return JSON.parse(storedData) as Session;
   }
 
   setStorage(DefaultSession);
@@ -75,7 +75,7 @@ function getStorage() {
   return DefaultSession;
 }
 
-function setStorage(session: LoginUser) {
+function setStorage(session: Session) {
   localStorage.setItem(SKEY, JSON.stringify(session));
 }
 
@@ -83,47 +83,47 @@ export const SessionProvider = ({
   children,
   loginHandlerRef,
 }: ProviderProps) => {
-
   const [session, dispatch] = useReducer(
     reducer,
     getStorage() || DefaultSession
   );
 
-  const isValidRange = (id:number) => {
-    return id>=1 && id<=10;
-  }
+  const isValidRange = (id: number) => {
+    return id >= 1 && id <= 10;
+  };
 
-  const login = useCallback((id: number) => {
-    const loginNoti =
-      loginHandlerRef?.current?.noti ||
-      alert;
+  const isEmpty = (id: number): boolean => {
+    const loginNoti = loginHandlerRef?.current?.noti || alert;
 
-    const focusId =
-      loginHandlerRef?.current?.focusId;
+    const focusId = loginHandlerRef?.current?.focusId;
 
-    if (!id || isNaN(id)) {
+    if (!id) {
       loginNoti("User ID를 입력하세요!");
       if (focusId) focusId();
-      return false;
+      return true;
     }
+    return false;
+  };
 
-    dispatch({ type: "login", payload: {id} });
-
+  const login = useCallback((user: LoginUser) => {
+    dispatch({
+      type: "login",
+      payload: { selectedAlbumId: null, loginUser: user! },
+    });
     return true;
   }, []);
 
   const logout = useCallback(() => {
-    dispatch({type: "logout", payload: DefaultSession});
+    dispatch({ type: "logout", payload: DefaultSession });
   }, []);
 
-
   useEffect(() => {
-    dispatch({ type: "set", payload: getStorage() });
+    dispatch({ type: "init", payload: getStorage() });
   }, []);
 
   return (
     <SessionContext.Provider
-      value={{ session, login, logout ,isValidRange}}
+      value={{ session, login, logout, isValidRange, isEmpty }}
     >
       {children}
     </SessionContext.Provider>

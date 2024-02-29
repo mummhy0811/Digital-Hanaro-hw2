@@ -38,7 +38,6 @@ export const useFetch = <T>({
         setData(data);
       } catch (err) {
         if (err instanceof Error) {
-          // console.log('🚀  err:', err.name, typeof err);
           if (err.name !== 'AbortError') setError(err.message);
         }
       } finally {

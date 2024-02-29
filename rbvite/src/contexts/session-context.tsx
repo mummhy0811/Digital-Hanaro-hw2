@@ -73,7 +73,6 @@ const DefaultSession: Session = {
 
 function getStorage() {
   const storedData = localStorage.getItem(SKEY);
-  console.log(storedData);
   if (storedData) {
     return JSON.parse(storedData) as Session;
   }
